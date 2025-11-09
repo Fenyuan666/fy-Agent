@@ -1,0 +1,1 @@
+"""Caching plugin (Redis)."""

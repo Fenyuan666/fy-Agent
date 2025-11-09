@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file: .env
+    volumes:
+      - ./backend:/app/backend
+      - ./.env:/app/.env
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend.Dockerfile
+    environment:
+      - VITE_API_BASE=/api/v1
+    volumes:
+      - ./frontend:/app
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    ports:
+      - "5173:5173"
+
+  # mongo:
+  #   image: mongo:6
+  #   restart: unless-stopped
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo_data:/data/db
+
+  # mysql:
+  #   image: mysql:8
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: example
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+
+  # redis:
+  #   image: redis:7
+  #   ports:
+  #     - "6379:6379"
+
+volumes:
+  mongo_data:
+  mysql_data:
